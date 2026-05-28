@@ -1,0 +1,15 @@
+﻿@page "/logout"
+@using CollegeManagement.Sevices
+
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<p>Logging out...</p>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthService.LogoutAsync();
+        Navigation.NavigateTo("/login", forceLoad: true);
+    }
+}

@@ -1,0 +1,62 @@
+# Build folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio files
+.vs/
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# NuGet
+*.nupkg
+packages/
+.nuget/
+
+# Publish output
+publish/
+
+# Entity Framework
+*.dbmdl
+*.jfm
+
+# Blazor WebAssembly generated files
+wwwroot/_framework/
+wwwroot/lib/
+
+# Node modules (if using frontend tooling)
+node_modules/
+
+# Environment files
+appsettings.Development.json
+.env
+
+# Secrets
+secrets.json
+
+# Temporary files
+*.tmp
+*.temp
+
+# Test Results
+TestResults/
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
