@@ -1,6 +1,7 @@
 using CollegeManagement.Components;
 using CollegeManagement.Data;
 using CollegeManagement.Data.Repos;
+using CollegeManagement.Models.ViewModels;
 using CollegeManagement.Sevices;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -13,14 +14,13 @@ namespace CollegeManagement
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddControllersWithViews();
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    
             var detection = ServerVersion.AutoDetect(connectionString);
-            
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(connectionString, detection));
 
@@ -29,6 +29,7 @@ namespace CollegeManagement
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
 
+
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -36,10 +37,10 @@ namespace CollegeManagement
                     options.LogoutPath = "/logout";
                     options.AccessDeniedPath = "/access-denied";
                 });
-
             builder.Services.AddAuthorization();
 
             var app = builder.Build();
+
 
             using (var scope = app.Services.CreateScope())
             {
@@ -55,15 +56,19 @@ namespace CollegeManagement
             }
 
             app.UseStaticFiles();
-            app.UseAntiforgery();
+
+            app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseAntiforgery();
+            app.MapControllers();
+
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }
