@@ -31,6 +31,7 @@ namespace CollegeManagement.Sevices
 
         public async Task<bool> LoginAsync(LoginViewModel model)
         {
+            UserFactory.manageUserInstance(Role.Admin);
             var user = await _userRepository.GetByEmailAsync(model.Email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
