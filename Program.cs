@@ -1,7 +1,9 @@
 using CollegeManagement.Components;
 using CollegeManagement.Data;
 using CollegeManagement.Data.Repos;
+using CollegeManagement.Data.Repositories;
 using CollegeManagement.Models.ViewModels;
+using CollegeManagement.Services;
 using CollegeManagement.Sevices;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -26,8 +28,14 @@ namespace CollegeManagement
 
             builder.Services.AddHttpContextAccessor();
 
+            //Auth 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+
+            //Department Flow DI initalize
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+
 
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

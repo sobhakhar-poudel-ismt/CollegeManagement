@@ -1,3 +1,14 @@
 ﻿@page "/admin/departments"
+@using CollegeManagement.Components.ManageDepartment
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles = "Admin")]
+
+
+<div class="row">
+    <div class="col-6"> 
+        <DepartmentForm/> 
+    </div>
+    <div class="col-6">
+        <DepartmentTable/>
+    </div>
+</div>
