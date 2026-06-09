@@ -1,4 +1,7 @@
-﻿using CollegeManagement.Models.ViewModels;
+﻿using CollegeManagement.Data.Repositories;
+using CollegeManagement.Helper.Mapper;
+using CollegeManagement.Models.Domains.Academics;
+using CollegeManagement.Models.ViewModels;
 
 namespace CollegeManagement.Services
 {
@@ -8,24 +11,38 @@ namespace CollegeManagement.Services
         Task<DepartmentViewModel> GetByIdAsync(int id);
         Task AddAsync(DepartmentViewModel model);
         Task UpdateAsync(DepartmentViewModel model);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(DepartmentViewModel model);
     }
 
     public class DepartmentService : IDepartmentService
     {
-        public Task AddAsync(DepartmentViewModel model)
+
+        //readonly
+        //Initialize 
+        //Constructor
+        //No Change after that
+        private readonly IDepartmentRepository repository;
+
+        //Constructor DI
+        public DepartmentService(IDepartmentRepository _repo) { 
+            repository= _repo;
+        }
+        public async Task AddAsync(DepartmentViewModel model)
         {
-            throw new NotImplementedException();
+          var domainModel = DepartmentMapper.ToDomainModel(model);
+          await repository.AddAsync(domainModel);
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(DepartmentViewModel model)
         {
-            throw new NotImplementedException();
+            var department = DepartmentMapper.ToDomainModel(model);
+            await repository.DeleteAsync(department);
         }
 
-        public Task<List<DepartmentViewModel>> GetAllAsync()
+        public async Task<List<DepartmentViewModel>> GetAllAsync()
         {
-            throw new NotImplementedException();
+           var departments= await repository.GetAllAsync();
+           return departments.Select(x => DepartmentMapper.ToViewModel(x)).ToList();
         }
 
         public Task<DepartmentViewModel> GetByIdAsync(int id)

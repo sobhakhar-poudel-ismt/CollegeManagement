@@ -1,5 +1,51 @@
-﻿<h3>DepartmentForm</h3>
+﻿@using CollegeManagement.Helper.Mapper
+@using CollegeManagement.Models.ViewModels
+@using CollegeManagement.Models.Domains
+@using CollegeManagement.Services
+
+@inject IDepartmentService DepartmentService
+
+<h4>@(Model.DepartmentId == 0 ? "Add Department" : "Edit Department")</h4>
+
+<EditForm Model="Model" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Department Name</label>
+        <InputText class="form-control" @bind-Value="Model.Name" />
+        <ValidationMessage For="@(() => Model.Name)" />
+    </div>
+
+    <div class="mb-3">
+        <label>Description</label>
+        <InputTextArea class="form-control" @bind-Value="Model.Description" />
+        <ValidationMessage For="@(() => Model.Description)" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">
+        @(Model.DepartmentId == 0 ? "Save" : "Update")
+    </button>
+</EditForm>
 
 @code {
+    [Parameter]
+    public DepartmentViewModel Model { get; set; } = new();
 
+    [Parameter]
+    public EventCallback OnSaved { get; set; }
+
+    private async Task HandleSubmit()
+    {
+       
+        if (Model.DepartmentId == 0)
+        {
+            await DepartmentService.AddAsync(Model);
+        }
+        else
+        {
+            await DepartmentService.UpdateAsync(Model);
+        }
+
+        await OnSaved.InvokeAsync();
+    }
 }

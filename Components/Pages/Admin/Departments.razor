@@ -1,14 +1,56 @@
 ﻿@page "/admin/departments"
 @using CollegeManagement.Components.ManageDepartment
+@using CollegeManagement.Models.ViewModels
+@using CollegeManagement.Services
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles = "Admin")]
 
+@inject IDepartmentService Service
+
 
 <div class="row">
-    <div class="col-6"> 
-        <DepartmentForm/> 
-    </div>
     <div class="col-6">
-        <DepartmentTable/>
+        <DepartmentForm />
+    </div>
+
+    <div class="col-6">
+        <DepartmentTable  />
     </div>
 </div>
+
+@code {
+    private DepartmentViewModel SelectedDepartment = new();
+
+    private void EditDepartment(DepartmentViewModel model)
+    {
+        SelectedDepartment = model;
+    }
+
+    private void SaveForm()
+    {
+        if (SelectedDepartment.DepartmentId == 0)
+        {
+            Service.AddAsync(SelectedDepartment);
+        }
+        else
+        {
+            //Update
+            Service.UpdateAsync(SelectedDepartment);
+        }
+        SelectedDepartment = new();
+    }
+}
+
+ @* Model="SelectedDepartment" OnSaved="SaveForm" *@
+ @* OnEdit="EditDepartment" *@
+
+
+@*  /departments -> View
+ /add-department
+ /edit-department
+
+
+ /department 
+     FOrm
+     Table *@
+  
