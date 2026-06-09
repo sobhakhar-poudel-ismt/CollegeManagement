@@ -1,4 +1,6 @@
-﻿using CollegeManagement.Data.Repositories;
+﻿using CollegeManagement.Components.Pages.Admin;
+using CollegeManagement.Data.Repositories;
+using CollegeManagement.Exceptions;
 using CollegeManagement.Helper.Mapper;
 using CollegeManagement.Models.Domains.Academics;
 using CollegeManagement.Models.ViewModels;
@@ -29,8 +31,12 @@ namespace CollegeManagement.Services
         }
         public async Task AddAsync(DepartmentViewModel model)
         {
-          var domainModel = DepartmentMapper.ToDomainModel(model);
-          await repository.AddAsync(domainModel);
+            var domainModel = DepartmentMapper.ToDomainModel(model);
+            var exists = await repository.ExistsByNameAsync(domainModel.Name);
+            if (exists) {
+                throw new DuplicateDepartmentException(domainModel.Name);
+            }
+            await repository.AddAsync(domainModel);
         }
 
         public async Task DeleteAsync(DepartmentViewModel model)

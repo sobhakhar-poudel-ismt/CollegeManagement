@@ -7,6 +7,7 @@ namespace CollegeManagement.Data.Repositories
     {
         Task<List<Department>> GetAllAsync();
         Task<Department?> GetByIdAsync(int id);
+        Task<bool> ExistsByNameAsync(string name);
         Task AddAsync(Department department);
         Task UpdateAsync(Department department);
         Task DeleteAsync(Department department);
@@ -30,6 +31,11 @@ namespace CollegeManagement.Data.Repositories
         {
             _context.Departments.Remove(department);
            await _context.SaveChangesAsync();
+        }
+
+        public Task<bool> ExistsByNameAsync(string name)
+        {
+            return _context.Departments.AnyAsync(d => d.Name == name);
         }
 
         public Task<List<Department>> GetAllAsync()

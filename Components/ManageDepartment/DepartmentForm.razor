@@ -1,5 +1,6 @@
-﻿@using CollegeManagement.Helper.Mapper
+﻿@using CollegeManagement.Exceptions
 @using CollegeManagement.Models.ViewModels
+@using CollegeManagement.Helper.Mapper
 @using CollegeManagement.Models.Domains
 @using CollegeManagement.Services
 
@@ -7,8 +8,9 @@
 
 <h4>@(Model.DepartmentId == 0 ? "Add Department" : "Edit Department")</h4>
 
-<EditForm Model="Model" OnValidSubmit="HandleSubmit">
+<EditForm FormName="DepartmentForm" Model="Model" OnValidSubmit="HandleSubmit">
     <DataAnnotationsValidator />
+    <p style="color:red;font-weight:500">@ErrorMessage</p>
 
     <div class="mb-3">
         <label>Department Name</label>
@@ -34,18 +36,35 @@
     [Parameter]
     public EventCallback OnSaved { get; set; }
 
+    private string? ErrorMessage;
+
     private async Task HandleSubmit()
     {
-       
+
         if (Model.DepartmentId == 0)
         {
-            await DepartmentService.AddAsync(Model);
+            try{
+                await DepartmentService.AddAsync(Model);
+                await OnSaved.InvokeAsync();
+            }
+            catch (DuplicateDepartmentException e)
+            {
+                ErrorMessage = e.Message;
+                //Specific handling of exception  
+                //No Speific action needed for this scenario
+            }
+            catch(Exception e)
+            {
+             ErrorMessage = e.Message;
+            //Generic Handling of exception    
+            }
+
         }
         else
         {
             await DepartmentService.UpdateAsync(Model);
         }
 
-        await OnSaved.InvokeAsync();
+       
     }
 }

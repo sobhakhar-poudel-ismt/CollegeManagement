@@ -1,5 +1,54 @@
-﻿<h3>DepartmentTable</h3>
+﻿@using CollegeManagement.Helper.Mapper
+@using CollegeManagement.Models.Domains.Academics
+@using CollegeManagement.Models.ViewModels
+@using CollegeManagement.Services
+@inject IDepartmentService DepartmentService
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>SN</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int sn = 1;
+        }
+        @foreach (var department in Departments)
+        {
+            <tr>
+                <td>@sn</td>
+                <td>@department.Name</td>
+                <td>@department.Description</td>
+                <td>
+                    <button class="btn btn-sm btn-primary"
+                            @onclick="() => Edit(department)">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+            sn++;
+        }
+    </tbody>
+</table>
 
 @code {
+    [Parameter]
+    public EventCallback<DepartmentViewModel> OnEdit { get; set; }
 
+    private List<DepartmentViewModel> Departments = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Departments = await DepartmentService.GetAllAsync();
+    }
+
+    private async Task Edit(DepartmentViewModel model)
+    {
+        await OnEdit.InvokeAsync(model);
+    }
 }
